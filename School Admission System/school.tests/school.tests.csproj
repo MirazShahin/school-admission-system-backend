@@ -9,7 +9,11 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.14" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="4.16.0" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
   </ItemGroup>
@@ -21,6 +25,8 @@
   <ItemGroup>
     <ProjectReference Include="..\school.application\school.application.csproj" />
     <ProjectReference Include="..\school.domain\school.domain.csproj" />
+    <ProjectReference Include="..\school.infrastructure\school.infrastructure.csproj" />
+    <ProjectReference Include="..\school.Api\school.Api.csproj" />
   </ItemGroup>
 
 </Project>
