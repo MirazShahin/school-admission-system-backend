@@ -13,7 +13,12 @@ public sealed class HoldRepository(AppDbContext db) : IHoldRepository
         db.Holds.Add(hold);
         return Task.CompletedTask;
     }
-
+    public Task ExpireAllStaleAsync(DateTimeOffset now, CancellationToken ct) =>
+    db.Holds
+        .Where(h => h.Status == HoldStatus.Held && h.ExpiresAt <= now)
+        .ExecuteUpdateAsync(s => s
+            .SetProperty(h => h.Status, HoldStatus.Expired)
+            .SetProperty(h => h.UpdatedAt, now), ct);
     public Task<Hold?> GetAsync(string holdId, CancellationToken ct) =>
         db.Holds.AsNoTracking().FirstOrDefaultAsync(h => h.HoldId == holdId, ct);
 

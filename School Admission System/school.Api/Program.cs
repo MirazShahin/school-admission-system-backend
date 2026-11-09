@@ -12,7 +12,7 @@ builder.Services.AddHealthChecks();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddInfrastructure(builder.Configuration);
-
+builder.Services.AddHostedService<School.Api.Background.ExpirySweeper>();
 builder.Services.AddScoped<ClassService>();
 builder.Services.AddScoped<HoldService>();
 builder.Services.Configure<HoldOptions>(o =>
