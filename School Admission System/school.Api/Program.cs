@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using School.Api.Background;
 using School.Api.Middleware;
 using School.Application.Classes;
 using School.Application.Holds;
@@ -12,7 +13,7 @@ builder.Services.AddHealthChecks();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddHostedService<School.Api.Background.ExpirySweeper>();
+builder.Services.AddHostedService<ExpirySweeper>();
 builder.Services.AddScoped<ClassService>();
 builder.Services.AddScoped<HoldService>();
 builder.Services.Configure<HoldOptions>(o =>
@@ -28,7 +29,22 @@ builder.WebHost.UseUrls("http://+:8080");
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
-    scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.Migrate();
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    for (var attempt = 1; ; attempt++)
+    {
+        try
+        {
+            db.Database.Migrate();
+            break;
+        }
+        catch (Exception ex) when (attempt < 10)
+        {
+            app.Logger.LogWarning(ex, "Database not ready, retry {Attempt}", attempt);
+            Thread.Sleep(2000);
+        }
+    }
+}
 
 if (app.Environment.IsDevelopment())
 {
