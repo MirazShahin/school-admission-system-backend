@@ -3,8 +3,8 @@
 A small school admission system. Guardians can pick a class, hold a seat for 10 minutes, and confirm the admission by paying the fee. Admins can create classes.
 
 The project is split into two repositories:
-- **Backend** (this repo): ASP.NET Core (.NET 8), PostgreSQL, clean architecture
-- **Frontend** (separate repo): React, Vite, TypeScript
+- **Backend**: ASP.NET Core (.NET 8), PostgreSQL, clean architecture
+- **Frontend** : React, Vite, TypeScript
 
 ## Requirements
 
