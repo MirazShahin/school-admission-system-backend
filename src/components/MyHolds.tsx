@@ -2,29 +2,44 @@ import { useEffect, useState } from 'react';
 import { api, ApiError } from '../api';
 import type { HoldSummary } from '../types';
 
-export default function MyHolds({ studentId }: { studentId: string }) {
+export default function MyHolds({
+  studentId,
+  refreshKey = 0,
+}: {
+  studentId: string;
+  refreshKey?: number;
+}) {
   const [holds, setHolds] = useState<HoldSummary[]>([]);
   const [error, setError] = useState('');
   const [now, setNow] = useState(Date.now());
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
-  // Refresh the list and the countdown every second.
+  // Reload when studentId changes, on the 3s poll, and immediately when refreshKey changes.
   useEffect(() => {
     if (!studentId) return;
     let alive = true;
     const load = () =>
       api<HoldSummary[]>('/me/holds', { studentId })
-        .then((rows) => alive && (setHolds(rows), setError('')))
+        .then((rows) => {
+          if (alive) {
+            setHolds(rows);
+            setError('');
+          }
+        })
         .catch((e) => alive && setError(e instanceof Error ? e.message : 'Could not load.'));
     load();
     const poll = setInterval(load, 3000);
-    const tick = setInterval(() => setNow(Date.now()), 1000);
     return () => {
       alive = false;
       clearInterval(poll);
-      clearInterval(tick);
     };
-  }, [studentId]);
+  }, [studentId, refreshKey]);
+
+  // Countdown tick every second.
+  useEffect(() => {
+    const tick = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(tick);
+  }, []);
 
   async function act(holdId: string, action: 'confirm' | 'cancel') {
     setError('');

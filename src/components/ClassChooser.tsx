@@ -2,7 +2,13 @@ import { useEffect, useState } from 'react';
 import { api, ApiError } from '../api';
 import type { ClassItem } from '../types';
 
-export default function ClassChooser({ studentId }: { studentId: string }) {
+export default function ClassChooser({
+  studentId,
+  onApplied,
+}: {
+  studentId: string;
+  onApplied?: () => void;
+}) {
   const [classes, setClasses] = useState<ClassItem[]>([]);
   const [selected, setSelected] = useState('');
   const [message, setMessage] = useState('');
@@ -32,6 +38,7 @@ export default function ClassChooser({ studentId }: { studentId: string }) {
       await api(`/classes/${selected}/holds`, { method: 'POST', studentId });
       setMessage('Seat hold hoyeche. Niche "My applications" theke bhorti fee din.');
       setSelected('');
+      onApplied?.(); // refresh "My applications" immediately
     } catch (e) {
       setError(e instanceof ApiError ? e.message : 'Could not apply.');
     } finally {
