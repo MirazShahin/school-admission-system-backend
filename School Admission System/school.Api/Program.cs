@@ -20,7 +20,7 @@ builder.Services.Configure<HoldOptions>(o =>
     o.DurationSeconds = int.TryParse(builder.Configuration["HOLD_DURATION_SECONDS"], out var s) ? s : 600);
 
 builder.Services.AddCors(o => o.AddDefaultPolicy(p => p
-    .WithOrigins(builder.Configuration["FRONTEND_ORIGIN"] ?? "http://localhost:3000")
+    .WithOrigins("http://localhost:3000", "http://localhost:5173")
     .AllowAnyHeader()
     .AllowAnyMethod()));
 
@@ -52,8 +52,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseCors();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.MapControllers();
 app.MapHealthChecks("/health");
 
