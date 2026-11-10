@@ -6,6 +6,7 @@ export default function MyHolds({ studentId }: { studentId: string }) {
   const [holds, setHolds] = useState<HoldSummary[]>([]);
   const [error, setError] = useState('');
   const [now, setNow] = useState(Date.now());
+  const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
   // Refresh the list and the countdown every second.
   useEffect(() => {
@@ -27,6 +28,7 @@ export default function MyHolds({ studentId }: { studentId: string }) {
 
   async function act(holdId: string, action: 'confirm' | 'cancel') {
     setError('');
+    setConfirmingId(null);
     try {
       if (action === 'confirm') {
         await api(`/holds/${holdId}/confirm`, { method: 'POST', studentId });
@@ -51,25 +53,30 @@ export default function MyHolds({ studentId }: { studentId: string }) {
         {holds.map((h) => {
           const secondsLeft = Math.max(0, Math.floor((new Date(h.expiresAt).getTime() - now) / 1000));
           const expired = h.status === 'EXPIRED' || (h.status === 'HELD' && secondsLeft === 0);
+          const canAct = h.status === 'HELD' && !expired;
+
           return (
             <li key={h.holdId} style={{ padding: 12, border: '1px solid #ddd', marginBottom: 8 }}>
               <strong>{h.className}</strong> — {expired ? 'EXPIRED' : h.status}
-              {h.status === 'HELD' && !expired && (
+              {canAct && (
                 <span style={{ marginLeft: 12 }}>
                   {Math.floor(secondsLeft / 60)}:{String(secondsLeft % 60).padStart(2, '0')} left
                 </span>
               )}
+
+              {confirmingId === h.holdId && (
+                <div style={{ marginTop: 8, padding: 8, background: '#fff8e1', border: '1px solid #f0c36d' }}>
+                  <p>ভর্তি ফি দিয়ে confirm করবেন? এই action-এর পর seat permanent হবে।</p>
+                  <button onClick={() => act(h.holdId, 'confirm')}>Yes, confirm</button>{' '}
+                  <button onClick={() => setConfirmingId(null)}>No</button>
+                </div>
+              )}
+
               <div style={{ marginTop: 8 }}>
-                <button
-                  disabled={expired || h.status !== 'HELD'}
-                  onClick={() => act(h.holdId, 'confirm')}
-                >
+                <button disabled={!canAct} onClick={() => setConfirmingId(h.holdId)}>
                   ভর্তি ফি দিন
                 </button>{' '}
-                <button
-                  disabled={expired || h.status !== 'HELD'}
-                  onClick={() => act(h.holdId, 'cancel')}
-                >
+                <button disabled={!canAct} onClick={() => act(h.holdId, 'cancel')}>
                   বাতিল
                 </button>
               </div>
