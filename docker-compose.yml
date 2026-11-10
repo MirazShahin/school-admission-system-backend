@@ -15,7 +15,7 @@ services:
       retries: 10
 
   backend:
-    build: "./School Admission System"
+    build: ./backend
     environment:
       ConnectionStrings__Default: "Host=db;Port=5432;Database=school_admission;Username=postgres;Password=postgres"
       HOLD_DURATION_SECONDS: "600"
@@ -25,6 +25,16 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+  frontend:
+    build:
+      context: ../school-admission-system-frontend
+      args:
+        VITE_API_BASE_URL: "http://localhost:8080"
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
 
 volumes:
   pgdata:
