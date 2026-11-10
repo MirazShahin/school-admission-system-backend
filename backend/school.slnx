@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="ASSUMPTIONS.md" />
+  </Folder>
   <Project Path="school.Api/school.Api.csproj" />
   <Project Path="school.application/school.application.csproj" />
   <Project Path="school.domain/school.domain.csproj" />
