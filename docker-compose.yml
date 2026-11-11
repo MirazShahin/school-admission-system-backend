@@ -28,7 +28,7 @@ services:
 
   frontend:
     build:
-      context: ../school-admission-system-frontend
+      context: ./frontend
       args:
         VITE_API_BASE_URL: "http://localhost:8080"
     ports:

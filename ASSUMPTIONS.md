@@ -5,7 +5,7 @@ This file lists the decisions that were not clearly defined in the spec, or that
 ## Login and identity
 
 1) There is no login or password. The guardian enters a 17-digit Student ID, which is stored in the localStorage.
-2) We do not collect the student's name, phone number, or any other personal details. The `students` table only stores `student_birth_id` which basically 17 digits in BDand `created_at`.
+2) We do not collect the student's name, phone number, or any other personal details. The `students` table only stores `student_birth_id` which is the 17-digit birth registration number, and `created_at`.
 3) The admin page (`/admin`) and the guardian page (`/`) are separate routes. The admin page has no authentication.
 
 ## Classes
@@ -28,4 +28,9 @@ This file lists the decisions that were not clearly defined in the spec, or that
 
 ## Repository layout
 
-1) The spec mentions a single repository, but the backend and frontend are kept in two separate repositories for my flexibility. Docker Compose builds both from the sibling folders.
+1) The backend and frontend were first built in two separate repositories. They were merged into this single repository (with `git subtree`, so the history of both is kept), with `backend/` and `frontend/` folders and `docker-compose.yml` at the root.
+
+## Two backend processes on one database (bonus)
+
+1) The seat limit does not rely on any in-memory lock. Every apply runs in a database transaction that first locks the class row with `SELECT ... FOR UPDATE`, then counts held + confirmed seats and inserts the hold. PostgreSQL makes any other transaction for the same class wait on that row lock, even if it comes from a different backend process on a different port, so `held + confirmed` can never go over `totalSeats`.
+2) Confirm and cancel also lock the hold row with `SELECT ... FOR UPDATE`, so a double confirm from two processes still counts only once. The partial unique index `holds_one_live_per_student_class_uq` is a database-level backstop for the one-application rule.

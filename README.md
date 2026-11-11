@@ -2,27 +2,19 @@
 
 A small school admission system. Guardians can pick a class, hold a seat for 10 minutes, and confirm the admission by paying the fee. Admins can create classes.
 
-The project is split into two repositories:
-- **Backend**: ASP.NET Core (.NET 8), PostgreSQL, clean architecture
-- **Frontend** : React, Vite, TypeScript
+The repository has two parts:
+- **`backend/`**: ASP.NET Core (.NET 8), PostgreSQL, clean architecture
+- **`frontend/`**: React, Vite, TypeScript
 
 ## Requirements
 
-- Docker Desktop
-- Both repositories must sit side by side in the same folder:
-
-```
-D:\Assignment\
-├── school-admission-system-backend\     (this repo, contains docker-compose.yml)
-└── school-admission-system-frontend\    (frontend repo)
-```
-
-The compose file builds the frontend from `../school-admission-system-frontend`, so the folder name and location must match.
+- Docker Desktop (nothing else is needed to run the app)
 
 ## Running the project
 
+From the repository root:
+
 ```bash
-cd school-admission-system-backend
 docker compose up --build
 ```
 
@@ -50,9 +42,21 @@ Database data is kept in the `pgdata` volume. To delete it as well, run `docker 
 
 The backend tests start their own PostgreSQL instance with Testcontainers, so Docker must be running.
 
+With the .NET 8 SDK (or newer) installed, from the repository root:
+
 ```bash
-cd school-admission-system-backend
-dotnet test "backend/school.slnx"
+dotnet test backend/school.tests/school.tests.csproj
+```
+
+With Docker only (no .NET SDK on the machine), from the repository root:
+
+```bash
+docker run --rm -v "$PWD/backend:/src" -w /src \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -e TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal \
+  --add-host=host.docker.internal:host-gateway \
+  mcr.microsoft.com/dotnet/sdk:8.0 \
+  dotnet test school.tests/school.tests.csproj
 ```
 
 The tests cover:
@@ -63,7 +67,7 @@ The tests cover:
 ## Running the frontend locally (without Docker)
 
 ```bash
-cd school-admission-system-frontend
+cd frontend
 npm install
 npm run dev -- --port 5173 --strictPort
 ```
@@ -100,7 +104,6 @@ Errors use this format:
 Swagger UI is only enabled in the Development environment. To run the backend locally with Swagger:
 
 ```bash
-cd school-admission-system-backend
 set ASPNETCORE_ENVIRONMENT=Development
 dotnet run --project "backend/school.Api"
 ```
@@ -110,7 +113,7 @@ Then open http://localhost:8080/swagger.
 ## Folder structure
 
 ```
-school-admission-system-backend/
+./
 ├── backend/
 │   ├── school.Api/              Controllers, middleware, background service, Program.cs
 │   ├── school.application/      Services, DTOs, interfaces
@@ -120,7 +123,12 @@ school-admission-system-backend/
 │   ├── school.slnx
 │   ├── Dockerfile
 │   └── .dockerignore
+├── frontend/
+│   ├── src/                     React pages, components, API client
+│   ├── Dockerfile
+│   └── nginx.conf
 ├── docker-compose.yml
+├── README.md
 ├── ASSUMPTIONS.md
-└── README.md
+└── AI_USAGE.md
 ```
