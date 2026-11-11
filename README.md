@@ -78,7 +78,7 @@ The backend's CORS policy only allows `http://localhost:3000` and `http://localh
 
 ![Database schema](docs/schema.png)
 
-The source is [`docs/schema.svg`](docs/schema.svg). The tables are created by the EF Core migration in `backend/school.infrastructure/Migrations`.
+The tables are created by the EF Core migration in `backend/school.infrastructure/Migrations`.
 
 ## Design notes
 
