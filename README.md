@@ -74,6 +74,12 @@ npm run dev -- --port 5173 --strictPort
 
 The backend's CORS policy only allows `http://localhost:3000` and `http://localhost:5173`, so use one of these ports.
 
+## Database schema
+
+![Database schema](docs/schema.png)
+
+The source is [`docs/schema.svg`](docs/schema.svg). The tables are created by the EF Core migration in `backend/school.infrastructure/Migrations`.
+
 ## Design notes
 
 - **Seat allocation:** When a hold is created, the class row is locked with `SELECT ... FOR UPDATE`. This prevents two requests from taking the last seat at the same time.

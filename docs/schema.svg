@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="640" viewBox="0 0 1040 640" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <rect width="1040" height="640" fill="#ffffff"/>
+
+  <text x="30" y="42" font-size="24" font-weight="700" fill="#1a1a1a">School Admission System · Database schema</text>
+  <text x="30" y="68" font-size="14" fill="#555">PostgreSQL · 3 tables · seat counts are calculated from holds, never stored</text>
+
+  <!-- classes -->
+  <g transform="translate(30,100)">
+    <rect width="290" height="190" rx="8" fill="#f7f9fc" stroke="#2f5d9a" stroke-width="1.5"/>
+    <rect width="290" height="38" rx="8" fill="#2f5d9a"/>
+    <rect y="30" width="290" height="8" fill="#2f5d9a"/>
+    <text x="14" y="25" font-size="16" font-weight="700" fill="#fff">classes</text>
+    <g font-size="13" fill="#1a1a1a">
+      <text x="14" y="64"><tspan font-weight="700" fill="#b8860b">PK</tspan>  class_id</text>
+      <text x="200" y="64" fill="#666">varchar(40)</text>
+      <text x="14" y="92">      class_name</text>
+      <text x="200" y="92" fill="#666">varchar(120)</text>
+      <text x="14" y="120">      total_seats</text>
+      <text x="200" y="120" fill="#666">int</text>
+      <text x="14" y="148">      created_at</text>
+      <text x="200" y="148" fill="#666">timestamptz</text>
+    </g>
+    <text x="14" y="176" font-size="11.5" fill="#666">CHECK total_seats &gt;= 1 · names may repeat</text>
+  </g>
+
+  <!-- holds -->
+  <g transform="translate(375,100)">
+    <rect width="290" height="288" rx="8" fill="#f7f9fc" stroke="#2f5d9a" stroke-width="1.5"/>
+    <rect width="290" height="38" rx="8" fill="#2f5d9a"/>
+    <rect y="30" width="290" height="8" fill="#2f5d9a"/>
+    <text x="14" y="25" font-size="16" font-weight="700" fill="#fff">holds</text>
+    <g font-size="13" fill="#1a1a1a">
+      <text x="14" y="64"><tspan font-weight="700" fill="#b8860b">PK</tspan>  hold_id</text>
+      <text x="200" y="64" fill="#666">varchar(40)</text>
+      <text x="14" y="92"><tspan font-weight="700" fill="#2f8a4c">FK</tspan>  class_id</text>
+      <text x="200" y="92" fill="#666">varchar(40)</text>
+      <text x="14" y="120"><tspan font-weight="700" fill="#2f8a4c">FK</tspan>  student_id</text>
+      <text x="200" y="120" fill="#666">varchar(17)</text>
+      <text x="14" y="148">      status</text>
+      <text x="200" y="148" fill="#666">varchar(12)</text>
+      <text x="14" y="176">      expires_at</text>
+      <text x="200" y="176" fill="#666">timestamptz</text>
+      <text x="14" y="204">      created_at</text>
+      <text x="200" y="204" fill="#666">timestamptz</text>
+      <text x="14" y="232">      updated_at</text>
+      <text x="200" y="232" fill="#666">timestamptz</text>
+    </g>
+    <text x="14" y="256" font-size="11.5" fill="#666">CHECK status IN (HELD, CONFIRMED,</text>
+    <text x="14" y="272" font-size="11.5" fill="#666">EXPIRED, CANCELLED)</text>
+  </g>
+
+  <!-- students -->
+  <g transform="translate(720,100)">
+    <rect width="290" height="134" rx="8" fill="#f7f9fc" stroke="#2f5d9a" stroke-width="1.5"/>
+    <rect width="290" height="38" rx="8" fill="#2f5d9a"/>
+    <rect y="30" width="290" height="8" fill="#2f5d9a"/>
+    <text x="14" y="25" font-size="16" font-weight="700" fill="#fff">students</text>
+    <g font-size="13" fill="#1a1a1a">
+      <text x="14" y="64"><tspan font-weight="700" fill="#b8860b">PK</tspan>  student_id</text>
+      <text x="200" y="64" fill="#666">varchar(17)</text>
+      <text x="14" y="92">      created_at</text>
+      <text x="200" y="92" fill="#666">timestamptz</text>
+    </g>
+    <text x="14" y="120" font-size="11.5" fill="#666">CHECK student_id ~ '^[0-9]{17}$'</text>
+  </g>
+
+  <!-- relationships: classes 1 — N holds -->
+  <g stroke="#333" stroke-width="1.5" fill="none">
+    <line x1="320" y1="188" x2="375" y2="188"/>
+    <line x1="328" y1="180" x2="328" y2="196"/>
+    <line x1="363" y1="188" x2="375" y2="180"/>
+    <line x1="363" y1="188" x2="375" y2="196"/>
+  </g>
+  <text x="326" y="176" font-size="12" font-weight="700" fill="#333">1</text>
+  <text x="360" y="176" font-size="12" font-weight="700" fill="#333">N</text>
+
+  <!-- students 1 — N holds -->
+  <g stroke="#333" stroke-width="1.5" fill="none">
+    <line x1="665" y1="216" x2="720" y2="216"/>
+    <line x1="712" y1="208" x2="712" y2="224"/>
+    <line x1="677" y1="216" x2="665" y2="208"/>
+    <line x1="677" y1="216" x2="665" y2="224"/>
+  </g>
+  <text x="668" y="204" font-size="12" font-weight="700" fill="#333">N</text>
+  <text x="708" y="204" font-size="12" font-weight="700" fill="#333">1</text>
+
+  <!-- notes -->
+  <g transform="translate(30,405)">
+    <rect width="980" height="210" rx="8" fill="#fbfaf6" stroke="#cfcab8"/>
+    <text x="16" y="28" font-size="15" font-weight="700" fill="#1a1a1a">Indexes and rules</text>
+    <g font-size="13" fill="#1a1a1a">
+      <text x="16" y="56"><tspan font-weight="700">holds_one_live_per_student_class_uq</tspan>: UNIQUE (class_id, student_id) WHERE status IN ('HELD','CONFIRMED')</text>
+      <text x="32" y="74" fill="#555">One active application or admission per student per class, enforced by the database.</text>
+      <text x="16" y="100"><tspan font-weight="700">holds_class_status_idx</tspan>: (class_id, status), used to count held and confirmed seats</text>
+      <text x="16" y="122"><tspan font-weight="700">holds_student_created_idx</tspan>: (student_id, created_at), used by GET /me/holds</text>
+      <text x="16" y="148">Foreign keys holds.class_id → classes and holds.student_id → students use ON DELETE RESTRICT.</text>
+      <text x="16" y="172">Available seats = total_seats − confirmed − held (only holds with expires_at &gt; now count as held).</text>
+      <text x="16" y="194">Applying locks the class row (SELECT … FOR UPDATE), so held + confirmed can never exceed total_seats.</text>
+    </g>
+  </g>
+</svg>
