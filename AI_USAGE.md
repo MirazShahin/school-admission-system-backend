@@ -16,7 +16,7 @@ This project was built with help from Claude.
  1) Chose the requirements that were left open, such as: no login, no name collection, duplicate class names allowed, separate admin and guardian routes.
  2) Ran every command locally and checked the output before moving on.
  3) Tested the seat-hold behaviour with the concurrency tests and by using the UI.
- 4) Decided to keep the backend and frontend in two repositories (this differs from the spec).
+ 4) Built the backend and frontend in two repositories at first, then merged them into one repository with `backend/` and `frontend/` folders as the spec requires.
 
 ## Mistakes the AI made
 
