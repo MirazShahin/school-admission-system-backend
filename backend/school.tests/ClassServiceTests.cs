@@ -37,6 +37,17 @@ public sealed class ClassServiceTests
     }
 
     [Fact]
+    public async Task Create_with_name_over_120_chars_throws_NAME_TOO_LONG()
+    {
+        var service = CreateService();
+
+        var ex = await Assert.ThrowsAsync<ValidationFailedException>(() =>
+            service.CreateAsync(new CreateClassCommand(new string('a', 121), 10), default));
+
+        Assert.Equal("NAME_TOO_LONG", ex.Code);
+    }
+
+    [Fact]
     public async Task Create_with_zero_seats_throws_INVALID_SEATS()
     {
         var service = CreateService();
